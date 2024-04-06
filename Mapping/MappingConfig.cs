@@ -8,7 +8,7 @@ namespace Bits_Orchestra_Test_Task.Mapping
     {
         public MappingProfile()
         {
-            CreateMap<Employee, ResponseEmployeeDto>();
+            CreateMap<Employee, ResponseEmployeeDto>().ReverseMap();
             CreateMap<RequestEmployeeDto, Employee>();
         }
     }

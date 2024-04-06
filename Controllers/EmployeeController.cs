@@ -47,7 +47,7 @@ namespace Bits_Orchestra_Test_Task.Controllers
         [HttpPost("update-all")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult> UpdateAllAsync([FromBody] RequestEmployeeListDto employeesDto)
+        public async Task<ActionResult> UpdateAllAsync([FromBody] RequestUpdateEmployeeListDto employeesDto)
         {
             var newEmployees = mapper.Map<IEnumerable<Employee>>(employeesDto.Employees);
 
