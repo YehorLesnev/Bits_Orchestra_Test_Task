@@ -13,6 +13,7 @@ namespace Bits_Orchestra_Test_Task.Services
         Task CreateAllAsync(IEnumerable<T> entities);
 
         Task UpdateAsync(T entity);
+        Task UpdateAllAsync(T[] entities);
 
         Task DeleteAsync(T entity);
     }

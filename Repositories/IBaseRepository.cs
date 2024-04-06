@@ -14,6 +14,8 @@ namespace Bits_Orchestra_Test_Task.Repositories
 
         void Update(T entity);
 
+        void UpdateAll(T[] entities);
+
         void Delete(T entity);
 
         Task SaveAsync();

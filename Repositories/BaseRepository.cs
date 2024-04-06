@@ -50,6 +50,11 @@ namespace Bits_Orchestra_Test_Task.Repositories
             DbSet.Update(entity);
         }
 
+        public virtual void UpdateAll(T[] entities)
+        {
+            DbSet.UpdateRange(entities);
+        }
+
         public virtual void Delete(T entity)
         {
             DbSet.Remove(entity);

@@ -3,7 +3,7 @@ using Bits_Orchestra_Test_Task.Repositories;
 
 namespace Bits_Orchestra_Test_Task.Services
 {
-    public abstract class BaseService<T>(IBaseRepository<T> repository)
+    public abstract class BaseService<T>(IBaseRepository<T> repository) : IBaseService<T>
         where T : class
     {
         public async Task<T?> GetAsync(Expression<Func<T, bool>>? filter = null, bool asNoTracking = false)
@@ -33,6 +33,13 @@ namespace Bits_Orchestra_Test_Task.Services
         public async Task UpdateAsync(T entity)
         {
             repository.Update(entity);
+
+            await repository.SaveAsync();
+        }
+
+        public async Task UpdateAllAsync(T[] entities)
+        {
+            repository.UpdateAll(entities);
 
             await repository.SaveAsync();
         }

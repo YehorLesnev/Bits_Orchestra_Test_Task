@@ -44,6 +44,18 @@ namespace Bits_Orchestra_Test_Task.Controllers
             return await GetByIdAsync(newEmployee.EmployeeId);
         }
 
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult> UpdateAllAsync([FromBody] RequestEmployeeListDto employeesDto)
+        {
+            var newEmployees = mapper.Map<IEnumerable<Employee>>(employeesDto.Employees);
+
+            await employeeService.UpdateAllAsync(newEmployees.ToArray());
+
+            return Ok();
+        }
+
         [HttpPatch("{id:guid}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
