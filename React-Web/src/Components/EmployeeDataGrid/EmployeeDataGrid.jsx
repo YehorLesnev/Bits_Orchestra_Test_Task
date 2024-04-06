@@ -20,13 +20,14 @@ import {
 } from '@mui/x-data-grid-generator';
 
 import Papa from 'papaparse';
+import { baseUrl } from '../../config/config';
 
 function EditToolbar(props) {
   const { setRows, setRowModesModel } = props;
 
   const handleClick = () => {
     const id = randomId();
-    setRows((oldRows) => [...oldRows, { id, employee_id: '0', employee_name: '', employee_date_of_birth: new Date(), is_married: false, employee_phone: '', employee_salary: 0 }]);
+    setRows((oldRows) => [...oldRows, { id, employee_id: null, employee_name: '', employee_date_of_birth: new Date(), is_married: false, employee_phone: '', employee_salary: 0 }]);
     setRowModesModel((oldModel) => ({
       ...oldModel,
       [id]: { mode: GridRowModes.Edit, fieldToFocus: 'employee_name' },
@@ -37,9 +38,8 @@ function EditToolbar(props) {
     document.getElementById('csv-file-input').click();
   };
 
-  const handleSave = () => {
-    // Implement save logic
-    console.log('Save button clicked');
+  const handleSaveDataClick = () => {
+    document.getElementById('save-data-button').click();
   };
 
   return (
@@ -50,15 +50,15 @@ function EditToolbar(props) {
       <Button color="primary" startIcon={<UploadFileIcon />} onClick={handleUploadCSV}>
         Upload CSV file
       </Button>
-      <Button color="primary" startIcon={<SaveIcon />} onClick={handleSave}>
-        Save
+      <Button color="primary" startIcon={<SaveIcon />} onClick={handleSaveDataClick}>
+        Save to Database
       </Button>
     </GridToolbarContainer>
   );
 }
 
 export default function EmployeeDataGrid() {
-  const [rows, setRows] = useState([ ]);
+  const [rows, setRows] = useState([]);
   const [rowModesModel, setRowModesModel] = React.useState({});
 
   const handleRowEditStop = (params, event) => {
@@ -86,16 +86,18 @@ export default function EmployeeDataGrid() {
       [id]: { mode: GridRowModes.View, ignoreModifications: true },
     });
 
-    const editedRow = rows.find((row) => row.id === id);
-    if (editedRow.isNew) {
-      setRows(rows.filter((row) => row.id !== id));
-    }
+    setRows(rows.filter((row) => row.id !== id));
   };
 
   const processRowUpdate = (newRow) => {
-    const updatedRow = { ...newRow, isNew: false };
-    setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
-    return updatedRow;
+    const rowIndex = rows.findIndex((row) => row.id === newRow.id);
+    if (rowIndex !== -1) {
+      const updatedRows = [...rows];
+      updatedRows[rowIndex] = newRow;
+      setRows(updatedRows);
+    }
+
+    return newRow;
   };
 
   const handleRowModesModelChange = (newRowModesModel) => {
@@ -199,9 +201,9 @@ export default function EmployeeDataGrid() {
 
             const parts = value.split('.');
             const dateString = `${parts[1]}/${parts[0]}/${parts[2]}`;
-            
+
             return new Date(dateString);
-          } else if(header === 'is_married'){
+          } else if (header === 'is_married') {
             return value === '0' ? false : true
           }
 
@@ -223,10 +225,57 @@ export default function EmployeeDataGrid() {
     }
   };
 
-  const handleSaveData = (e) => {
+  function formatDate(date) {
+    var d = new Date(date),
+        month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = d.getFullYear();
 
+    if (month.length < 2) 
+        month = '0' + month;
+    if (day.length < 2) 
+        day = '0' + day;
+
+    return [year, month, day].join('-');
+}
+
+  const handleSaveData = () => {
+    const resultRows = rows.map((row) => {
+
+      return {
+        employee_id: row.employee_id,
+        employee_name: row.employee_name,
+        employee_date_of_birth: formatDate(row.employee_date_of_birth),
+        employee_phone: row.employee_phone,
+        employee_salary: row.employee_salary,
+        is_married: row.is_married
+      };
+    });
+
+console.log(resultRows)
+
+    fetch(baseUrl + '/Employee/update-all', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        employees: resultRows
+      }),
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then(data => {
+        console.log('Data saved successfully:', data);
+      })
+      .catch(error => {
+        console.error('Error saving data:', error);
+      });
   };
-
   return (
     <Box
       sx={{
@@ -241,9 +290,9 @@ export default function EmployeeDataGrid() {
       }}
     >
       <input id="csv-file-input" type="file" accept=".csv" style={{ display: 'none' }} onChange={handleFileInputChange} />
-      <button id="save-data" style={{ display: 'none' }} onChange={handleSaveData}/>
+      <button id="save-data-button" style={{ display: 'none' }} onClick={handleSaveData} />
       <DataGrid
-        getRowId={(row) => row.employee_id === '0' ? row.id : row.employee_id}
+        getRowId={(row) => !row.employee_id ? row.id : row.employee_id}
         rows={rows}
         columns={columns}
         editMode="row"
