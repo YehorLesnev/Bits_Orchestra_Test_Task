@@ -85,10 +85,25 @@ export default function EmployeeDataGrid() {
   };
 
   const handleDeleteClick = (id) => () => {
-    console.log(id)
-    console.log(rows)
+
+    fetch(baseUrl + `/Employee/${id}`, {
+      method: 'DELETE',
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Failed to delete employee');
+        }
+        return response.json();
+      })
+      .then(data => {
+        console.log(`Employee with ID ${id} deleted successfully`);
+        // Handle any UI updates or data refresh if needed
+      })
+      .catch(error => {
+        console.error(`Error deleting employee with ID ${id}:`, error);
+      });
+
     setRows(rows.filter((row) => !row.employee_id ? row.id !== id : row.employee_id !== id));
-    console.log(rows)
   };
 
   const handleCancelClick = (id) => () => {
@@ -307,7 +322,8 @@ export default function EmployeeDataGrid() {
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
-        return response.json();
+
+        return response;
       })
       .then(data => {
         console.log('Data saved successfully:', data);
