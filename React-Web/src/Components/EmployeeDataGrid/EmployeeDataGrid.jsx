@@ -25,11 +25,11 @@ function EditToolbar(props) {
   const { setRows, setRowModesModel } = props;
 
   const handleClick = () => {
-    const employee_id = randomId();
-    setRows((oldRows) => [...oldRows, { employee_id, employee_name: '', employee_date_of_birth: new Date(), is_married: false, employee_phone: '', employee_salary: 0 }]);
+    const id = randomId();
+    setRows((oldRows) => [...oldRows, { id, employee_id: '0', employee_name: '', employee_date_of_birth: new Date(), is_married: false, employee_phone: '', employee_salary: 0 }]);
     setRowModesModel((oldModel) => ({
       ...oldModel,
-      [employee_id]: { mode: GridRowModes.Edit, fieldToFocus: 'employee_name' },
+      [id]: { mode: GridRowModes.Edit, fieldToFocus: 'employee_name' },
     }));
   };
 
@@ -67,34 +67,34 @@ export default function EmployeeDataGrid() {
     }
   };
 
-  const handleEditClick = (employee_id) => () => {
-    console.log(employee_id)
-    setRowModesModel({ ...rowModesModel, [employee_id]: { mode: GridRowModes.Edit } });
+  const handleEditClick = (id) => () => {
+    console.log(id)
+    setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
   };
 
-  const handleSaveClick = (employee_id) => () => {
-    setRowModesModel({ ...rowModesModel, [employee_id]: { mode: GridRowModes.View } });
+  const handleSaveClick = (id) => () => {
+    setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
   };
 
-  const handleDeleteClick = (employee_id) => () => {
-    setRows(rows.filter((row) => row.employee_id !== employee_id));
+  const handleDeleteClick = (id) => () => {
+    setRows(rows.filter((row) => row.id !== id));
   };
 
-  const handleCancelClick = (employee_id) => () => {
+  const handleCancelClick = (id) => () => {
     setRowModesModel({
       ...rowModesModel,
-      [employee_id]: { mode: GridRowModes.View, ignoreModifications: true },
+      [id]: { mode: GridRowModes.View, ignoreModifications: true },
     });
 
-    const editedRow = rows.find((row) => row.employee_id === employee_id);
+    const editedRow = rows.find((row) => row.id === id);
     if (editedRow.isNew) {
-      setRows(rows.filter((row) => row.employee_id !== employee_id));
+      setRows(rows.filter((row) => row.id !== id));
     }
   };
 
   const processRowUpdate = (newRow) => {
     const updatedRow = { ...newRow, isNew: false };
-    setRows(rows.map((row) => (row.employee_id === newRow.employee_id ? updatedRow : row)));
+    setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
     return updatedRow;
   };
 
@@ -103,7 +103,7 @@ export default function EmployeeDataGrid() {
   };
 
   const columns = [
-    // { field: 'employee_id', headerName: 'ID', width: 90 },
+    // { field: 'id', headerName: 'ID', width: 90 },
     {
       field: 'employee_name',
       headerName: 'Name',
@@ -243,7 +243,7 @@ export default function EmployeeDataGrid() {
       <input id="csv-file-input" type="file" accept=".csv" style={{ display: 'none' }} onChange={handleFileInputChange} />
       <button id="save-data" style={{ display: 'none' }} onChange={handleSaveData}/>
       <DataGrid
-        getRowId={(row) => row.employee_id}
+        getRowId={(row) => row.employee_id === '0' ? row.id : row.employee_id}
         rows={rows}
         columns={columns}
         editMode="row"
