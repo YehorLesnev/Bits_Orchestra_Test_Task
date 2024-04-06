@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34525.116
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bits_Orchestra_Test_Task", "Bits_Orchestra_Test_Task.csproj", "{EDC81C27-21B4-4DC7-A7FE-194411DE8AD6}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EDC81C27-21B4-4DC7-A7FE-194411DE8AD6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EDC81C27-21B4-4DC7-A7FE-194411DE8AD6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EDC81C27-21B4-4DC7-A7FE-194411DE8AD6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EDC81C27-21B4-4DC7-A7FE-194411DE8AD6}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {19991C34-72F0-4A7D-8447-C886E808F7CD}
+	EndGlobalSection
+EndGlobal
