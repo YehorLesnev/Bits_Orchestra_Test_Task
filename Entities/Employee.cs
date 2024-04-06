@@ -31,7 +31,7 @@ namespace Bits_Orchestra_Test_Task.Entities
         public required string EmployeePhone { get; set; }
 
         [Required]
-        [Column("employee_salary", TypeName = "Decimal(5,2)")]
+        [Column("employee_salary", TypeName = "Decimal(10,2)")]
         public required decimal EmployeeSalary { get; set; }
     }
 }
