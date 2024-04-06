@@ -8,6 +8,7 @@ import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Close';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
+import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
 import {
   GridRowModes,
   DataGrid,
@@ -42,13 +43,20 @@ function EditToolbar(props) {
     document.getElementById('save-data-button').click();
   };
 
+  const handleLoadFromDatabase = () => {
+    document.getElementById('load-data-button').click();
+  }
+
   return (
     <GridToolbarContainer>
       <Button color="primary" startIcon={<AddIcon />} onClick={handleClick}>
-        Add Employee
+        Add
       </Button>
       <Button color="primary" startIcon={<UploadFileIcon />} onClick={handleUploadCSV}>
         Upload CSV file
+      </Button>
+      <Button color="primary" startIcon={<CloudDownloadIcon />} onClick={handleLoadFromDatabase}>
+        Load from Database
       </Button>
       <Button color="primary" startIcon={<SaveIcon />} onClick={handleSaveDataClick}>
         Save to Database
@@ -227,17 +235,48 @@ export default function EmployeeDataGrid() {
 
   function formatDate(date) {
     var d = new Date(date),
-        month = '' + (d.getMonth() + 1),
-        day = '' + d.getDate(),
-        year = d.getFullYear();
+      month = '' + (d.getMonth() + 1),
+      day = '' + d.getDate(),
+      year = d.getFullYear();
 
-    if (month.length < 2) 
-        month = '0' + month;
-    if (day.length < 2) 
-        day = '0' + day;
+    if (month.length < 2)
+      month = '0' + month;
+    if (day.length < 2)
+      day = '0' + day;
 
     return [year, month, day].join('-');
-}
+  }
+
+  const handleLoadData = () => {
+    fetch(baseUrl + '/Employee')
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Failed to fetch employee data');
+        }
+        return response.json();
+      })
+      .then(data => {
+        const resultRows = data.map((employee) => {
+
+          const parts = employee.employee_date_of_birth.split('-');
+          const dateString = `${parts[1]}/${parts[2]}/${parts[0]}`;
+
+          return {
+            employee_id: employee.employee_id,
+            employee_name: employee.employee_name,
+            employee_date_of_birth: new Date(dateString),
+            is_married: employee.is_married,
+            employee_phone: employee.employee_phone,
+            employee_salary: employee.employee_salary
+          }
+        })
+
+        setRows(resultRows);
+      })
+      .catch(error => {
+        console.error('Error fetching employee data:', error);
+      });
+  }
 
   const handleSaveData = () => {
     const resultRows = rows.map((row) => {
@@ -251,8 +290,6 @@ export default function EmployeeDataGrid() {
         is_married: row.is_married
       };
     });
-
-console.log(resultRows)
 
     fetch(baseUrl + '/Employee/update-all', {
       method: 'POST',
@@ -291,6 +328,8 @@ console.log(resultRows)
     >
       <input id="csv-file-input" type="file" accept=".csv" style={{ display: 'none' }} onChange={handleFileInputChange} />
       <button id="save-data-button" style={{ display: 'none' }} onClick={handleSaveData} />
+      <button id="load-data-button" style={{ display: 'none' }} onClick={handleLoadData} />
+
       <DataGrid
         getRowId={(row) => !row.employee_id ? row.id : row.employee_id}
         rows={rows}
