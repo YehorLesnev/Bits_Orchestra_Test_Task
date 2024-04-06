@@ -85,7 +85,10 @@ export default function EmployeeDataGrid() {
   };
 
   const handleDeleteClick = (id) => () => {
-    setRows(rows.filter((row) => row.id !== id));
+    console.log(id)
+    console.log(rows)
+    setRows(rows.filter((row) => !row.employee_id ? row.id !== id : row.employee_id !== id));
+    console.log(rows)
   };
 
   const handleCancelClick = (id) => () => {
@@ -94,7 +97,7 @@ export default function EmployeeDataGrid() {
       [id]: { mode: GridRowModes.View, ignoreModifications: true },
     });
 
-    setRows(rows.filter((row) => row.id !== id));
+    setRows(rows.filter((row) => !row.employee_id ? row.id !== id : row.employee_id !== id));
   };
 
   const processRowUpdate = (newRow) => {
