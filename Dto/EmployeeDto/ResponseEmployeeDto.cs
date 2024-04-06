@@ -5,7 +5,7 @@ namespace Bits_Orchestra_Test_Task.Dto.EmployeeDto
     public class ResponseEmployeeDto
     {
         [JsonPropertyName("employee_id")]
-        public Guid EmployeeId { get; set; }
+        public Guid? EmployeeId { get; set; }
 
         [JsonPropertyName("employee_name")]
         public required string EmployeeName { get; set; }
